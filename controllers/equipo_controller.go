@@ -35,14 +35,7 @@ func GetEquipos(c *gin.Context) {
 }
 
 func GetEquipoByID(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	for _, a := range equipos {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "equipo not found"})
+	services.GetEquipoByID(c)
 }
 
 func PostEquipo(c *gin.Context) {
@@ -50,25 +43,11 @@ func PostEquipo(c *gin.Context) {
 }
 
 func UpdateEquipo(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	var updatedEquipo Equipo
-
-	if err := c.BindJSON(&updatedEquipo); err != nil {
-		return
-	}
-
-	for i, a := range equipos {
-		if a.ID == id {
-			equipos[i] = updatedEquipo
-			c.IndentedJSON(http.StatusOK, updatedEquipo)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "equipo not found"})
+	services.UpdateEquipo(c)
 }
 
 func DeleteEquipo(c *gin.Context) {
-	DeleteEquipo(c)
+	services.DeleteEquipo(c)
 }
 
 func RegisterRoutes(router *gin.Engine) {

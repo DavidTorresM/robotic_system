@@ -13,27 +13,27 @@ type Equipo struct {
 	Nombre        string         `gorm:"size:100;not null"`
 	Descripcion   string         `gorm:"size:255"`
 	RegistroFecha string         `gorm:"type:timestamp;default:now"`
-	Participantes []Participante `gorm:"foreignKey:EquipoID"` // Relación Uno a Muchos
-	Robots        []Robot        `gorm:"foreignKey:EquipoID"` // Relación Uno a Muchos
+	Participantes []Participante `gorm:"foreignKey:EquipoID" json:"Participantes,omitempty"` // Relación Uno a Muchos
+	Robots        []Robot        `gorm:"foreignKey:EquipoID" json:"Robots,omitempty"`        // Relación Uno a Muchos
 }
 
 type Participante struct {
-	ID       uint   `gorm:"primaryKey"`
-	Nombre   string `gorm:"size:100;not null"`
-	Correo   string `gorm:"size:100;unique;not null"`
-	Telefono string `gorm:"size:15"`
-	EquipoID uint   `gorm:"not null"`
-	Equipo   Equipo `gorm:"foreignKey:EquipoID"` // Relación Muchos a Uno
+	ID       uint    `gorm:"primaryKey"`
+	Nombre   string  `gorm:"size:100;not null"`
+	Correo   string  `gorm:"size:100;unique;not null"`
+	Telefono string  `gorm:"size:15"`
+	EquipoID uint    `gorm:"not null"`
+	Equipo   *Equipo `gorm:"foreignKey:EquipoID" json:"Equipo,omitempty"` // Relación Muchos a Uno
 }
 
 type Robot struct {
-	ID          uint      `gorm:"primaryKey"`
-	Nombre      string    `gorm:"size:100;not null"`
-	Descripcion string    `gorm:"size:255"`
-	EquipoID    uint      `gorm:"not null"`
-	Equipo      Equipo    `gorm:"foreignKey:EquipoID"`
-	CategoriaID uint      `gorm:"not null"`
-	Categoria   Categoria `gorm:"foreignKey:CategoriaID"` // Relación Muchos a Uno
+	ID          uint       `gorm:"primaryKey"`
+	Nombre      string     `gorm:"size:100;not null"`
+	Descripcion string     `gorm:"size:255"`
+	EquipoID    uint       `gorm:"not null"`
+	Equipo      *Equipo    `gorm:"foreignKey:EquipoID" json:"Equipo,omitempty"`
+	CategoriaID uint       `gorm:"not null"`
+	Categoria   *Categoria `gorm:"foreignKey:CategoriaID" json:"Categoria,omitempty"` // Relación Muchos a Uno
 }
 
 type Puntuacion struct {
@@ -47,7 +47,7 @@ type Puntuacion struct {
 	Ronda          uint
 	Comentarios    string `gorm:"size:255"`
 	FechaHora      string `gorm:"type:timestamp;default:now"`
-	Robot          Robot  `gorm:"foreignKey:RobotID"` // Relación Muchos a Uno
+	Robot          *Robot `gorm:"foreignKey:RobotID"` // Relación Muchos a Uno
 }
 
 type Ronda struct {
@@ -57,18 +57,18 @@ type Ronda struct {
 	EquipoBID   uint `gorm:"not null"`
 	GanadorID   uint
 	Ronda       uint
-	FechaHora   string `gorm:"type:timestamp;default:now"`
-	EquipoA     Equipo `gorm:"foreignKey:EquipoAID"` // Relación Muchos a Uno
-	EquipoB     Equipo `gorm:"foreignKey:EquipoBID"` // Relación Muchos a Uno
+	FechaHora   string  `gorm:"type:timestamp;default:now"`
+	EquipoA     *Equipo `gorm:"foreignKey:EquipoAID"` // Relación Muchos a Uno
+	EquipoB     *Equipo `gorm:"foreignKey:EquipoBID"` // Relación Muchos a Uno
 }
 
 type Arbitro struct {
-	ID          uint      `gorm:"primaryKey"`
-	Nombre      string    `gorm:"size:100;not null"`
-	Correo      string    `gorm:"size:100;unique;not null"`
-	Password    string    `gorm:"size:255;not null"`
-	CategoriaID uint      `gorm:"not null"`
-	Categoria   Categoria `gorm:"foreignKey:CategoriaID"` // Relación Muchos a Uno
+	ID          uint       `gorm:"primaryKey"`
+	Nombre      string     `gorm:"size:100;not null"`
+	Correo      string     `gorm:"size:100;unique;not null"`
+	Password    string     `gorm:"size:255;not null"`
+	CategoriaID uint       `gorm:"not null"`
+	Categoria   *Categoria `gorm:"foreignKey:CategoriaID"` // Relación Muchos a Uno
 }
 
 func MigrateTables(db *gorm.DB) error {
