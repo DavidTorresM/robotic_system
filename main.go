@@ -28,7 +28,8 @@ func main() {
 	router := gin.Default()
 
 	controllers.RegisterRoutes(router)
+	controllers.RegisterRoutesRobots(router)
 
-	router.Run("localhost:8080")
+	router.Run("localhost:3000")
 
 }

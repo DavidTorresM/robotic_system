@@ -9,16 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Equipo struct {
-	ID   uint64 `json:"id"`
-	Name string `json:"name"`
-}
-
-var equipos = []Equipo{
-	{ID: 1, Name: "Equipo1"},
-	{ID: 2, Name: "Equipo2"},
-}
-
 func GetEquipos(c *gin.Context) {
 	tam, err := strconv.Atoi(c.Query("size"))
 	if err != nil {
