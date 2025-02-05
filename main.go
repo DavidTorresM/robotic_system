@@ -6,6 +6,8 @@ import (
 	"robotica_concursos/models"
 	"robotica_concursos/services"
 
+	"os"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +35,6 @@ func main() {
 	controllers.RegisterLoginRoutes(router)
 	controllers.RegisterRegistreRoutes(router)
 
-	router.Run("localhost:3000")
+	router.Run(os.Getenv("IP_SERVER") + ":" + os.Getenv("PORT_SERVER"))
 
 }
