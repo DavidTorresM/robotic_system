@@ -21,6 +21,7 @@ type Participante struct {
 	ID       uint    `gorm:"primaryKey"`
 	Nombre   string  `gorm:"size:100;not null"`
 	Correo   string  `gorm:"size:100;unique;not null"`
+	Password string  `gorm:"size:100;" json:"Equipo,omitempty"`
 	Telefono string  `gorm:"size:15"`
 	EquipoID uint    `gorm:"not null"`
 	Equipo   *Equipo `gorm:"foreignKey:EquipoID" json:"Equipo,omitempty"` // Relación Muchos a Uno

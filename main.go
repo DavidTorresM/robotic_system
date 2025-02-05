@@ -29,6 +29,9 @@ func main() {
 
 	controllers.RegisterRoutes(router)
 	controllers.RegisterRoutesRobots(router)
+	controllers.RegisterParticipanteRoutes(router)
+	controllers.RegisterLoginRoutes(router)
+	controllers.RegisterRegistreRoutes(router)
 
 	router.Run("localhost:3000")
 
