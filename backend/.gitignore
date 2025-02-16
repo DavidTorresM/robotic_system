@@ -44,3 +44,6 @@ bin/
 obj/
 
 gin-bin
+.env
+config.yaml
+settings.json
