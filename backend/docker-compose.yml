@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: some-postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: robotic_system
+    environment:
+      IP_SERVER: ${IP_SERVER}
+      PORT_SERVER: ${PORT_SERVER}
+      DATABASE_DSN: ${DATABASE_DSN}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SENDER_EMAIL: ${SENDER_EMAIL}
+      SENDER_PASSWORD: ${SENDER_PASSWORD}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
