@@ -75,7 +75,8 @@ type RondaSigueLineas struct {
 	Intento            uint
 	Tiempo             string `gorm:"type:TIME(6)"`
 	SumaPenalizaciones uint   `gorm:"type:decimal(10,2)"`
-	FechaHora          string `gorm:"type:timestamp;default:now"`
+	FechaHoraInsercion string `gorm:"type:timestamp;default:now"`
+	FechaHoraCompetion string `gorm:"type:timestamp;default:null"`
 	Robot              *Robot `gorm:"foreignKey:RobotID"` // Relación Muchos a Uno
 }
 

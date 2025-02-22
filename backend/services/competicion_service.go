@@ -7,7 +7,41 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
 )
+
+func GetRondaCompeticionSumo() (*models.Ronda, error) {
+	db := GetDatabase()
+	var ronda models.Ronda
+	err := db.Table("rondas").Where("fecha_hora_competion is null").First(&ronda).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("no hay mas rondas de sumo disponibles. Posiblemente ya se hayan tomado todas las rondas")
+		} else {
+			return nil, fmt.Errorf("error al obtener la ronda de sumo: %w", err)
+		}
+	}
+	db.Model(&ronda).Update("fecha_hora_competion", time.Now())
+	fmt.Printf("Ronda tomada por arbitro id:%d ronda:[%v]\n", -1, ronda)
+	return &ronda, nil
+}
+
+func GetRondaCompeticionSigueLineas() (*models.RondaSigueLineas, error) {
+	db := GetDatabase()
+	var ronda models.RondaSigueLineas
+	err := db.Table("ronda_sigue_lineas").Where("fecha_hora_competion is null").First(&ronda).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("no hay mas rondas de sigue lineas disponibles. Posiblemente ya se hayan tomado todas las rondas")
+		} else {
+			return nil, fmt.Errorf("error al obtener la ronda de sigue lineas: %w", err)
+		}
+	}
+	db.Model(&ronda).Update("fecha_hora_competion", time.Now())
+	fmt.Printf("Ronda tomada por arbitro id:%d ronda:[%v]\n", -1, ronda)
+	return &ronda, nil
+}
 
 func StartCompetitionByID(id int) error {
 	db := GetDatabase()
@@ -101,14 +135,14 @@ func StartCompetitionSigueLineas(id uint) error {
 	// Verificar si ya hay una ronda en los últimos 3 meses
 	var ronda models.RondaSigueLineas
 	err := db.Table("ronda_sigue_lineas").
-		Select("MAX(fecha_hora) AS fecha_hora").
+		Select("MAX(fecha_hora_insercion) AS fecha_hora_insercion").
 		Scan(&ronda).Error
 	if err != nil {
 		return fmt.Errorf("error al obtener la última ronda: %w", err)
 	}
-	if ronda.FechaHora != "" {
+	if ronda.FechaHoraInsercion != "" {
 		layout := time.RFC3339
-		fechaTime, err := time.Parse(layout, ronda.FechaHora)
+		fechaTime, err := time.Parse(layout, ronda.FechaHoraInsercion)
 		if err != nil {
 			return fmt.Errorf("error al parsear la fecha de la última ronda: %w", err)
 		}

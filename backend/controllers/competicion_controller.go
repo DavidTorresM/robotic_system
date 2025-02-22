@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"robotica_concursos/services"
 
@@ -36,11 +37,33 @@ func GetCompeticion(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
-
-	// Placeholder for fetching the competition by ID
-	// competition := fetchCompetitionByID(id)
-
-	c.JSON(http.StatusOK, gin.H{"id": id})
+	if id == 1 {
+		ronda, err := services.GetRondaCompeticionSumo()
+		if err != nil {
+			if strings.Contains(err.Error(), "no hay mas rondas") {
+				c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprint(err)})
+				return
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
+				return
+			}
+		}
+		c.JSON(http.StatusOK, gin.H{"ronda": *ronda})
+		return
+	} else if id == 3 {
+		ronda, err := services.GetRondaCompeticionSigueLineas()
+		if err != nil {
+			if strings.Contains(err.Error(), "no hay mas rondas") {
+				c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprint(err)})
+				return
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
+				return
+			}
+		}
+		c.JSON(http.StatusOK, gin.H{"ronda": *ronda})
+		return
+	}
 }
 
 func RegisterRoutesCompeticion(router *gin.Engine) {
