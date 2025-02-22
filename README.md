@@ -20,22 +20,32 @@ Proposito del proyecto:
 ## Instalación
 
 1. Clona el repositorio:
-    ```bash
-    git clone https://github.com/tu_usuario/robotic_system.git
-    ```
+
+```bash
+git clone https://github.com/tu_usuario/robotic_system.git
+```
 2. Navega al directorio del proyecto:
-    ```bash
-    cd robotic_system
-    ```
-3. Sigue las instrucciones específicas para configurar el entorno de desarrollo tanto para React Native como para Golang.
+
+```bash
+cd robotic_system
+```
+3. Lanzar el backend.
+
+```bash
+cd backend
+cp .env.example.docker .env
+docker compose up
+```
+
+4. Lanzar el frontend.
+
+En proceso...
 
 ## Uso
 
 1. Inicia el servidor backend con Golang.
 2. Ejecuta la aplicación móvil con React Native.
 3. Utiliza la aplicación para registrar equipos, visualizar marcadores y calificar enfrentamientos.
-
-## Doc
 
 
 ## Licencia

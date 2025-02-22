@@ -18,7 +18,7 @@ RUN go build -o main -ldflags="-s -w" .
 
 # Set environment variables from .env file
 COPY .env .env
-RUN export $(cat .env | xargs)
+RUN export $(cat .env | grep -v "#" | xargs)
 
 # Command to run the executable
 CMD ["./main"]

@@ -9,15 +9,22 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	log.Println("Iniciando sistema de concursos robots")
+	log.Println("Cargando variables de entorno")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error al cargar el archivo .env: %v", err)
+		os.Exit(0)
+	}
 
 	log.Println("Generando DDL de la base de datos")
 	services.ConnectDatabase()
 
-	err := models.MigrateTables(services.DB)
+	err = models.MigrateTables(services.DB)
 	if err != nil {
 		log.Fatal("Error generando el DDL de la base de datos:", err)
 		return
