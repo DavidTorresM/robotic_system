@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Categoria struct {
 	ID          uint   `gorm:"primaryKey"`
@@ -30,10 +32,10 @@ type Participante struct {
 }
 
 type Robot struct {
-	ID          uint       `gorm:"primaryKey"`
-	Nombre      string     `gorm:"size:100;not null"`
-	Descripcion string     `gorm:"size:255"`
-	EquipoID    uint       `gorm:"not null"`
+	ID          uint   `gorm:"primaryKey"`
+	Nombre      string `gorm:"size:100;not null"`
+	Descripcion string `gorm:"size:255"`
+	EquipoID    uint
 	Equipo      *Equipo    `gorm:"foreignKey:EquipoID" json:"Equipo,omitempty"`
 	CategoriaID uint       `gorm:"not null"`
 	Categoria   *Categoria `gorm:"foreignKey:CategoriaID" json:"Categoria,omitempty"` // Relación Muchos a Uno
@@ -54,15 +56,27 @@ type Puntuacion struct {
 }
 
 type Ronda struct {
-	ID          uint `gorm:"primaryKey"`
-	CategoriaID uint `gorm:"not null"`
-	EquipoAID   uint `gorm:"not null"`
-	EquipoBID   uint `gorm:"not null"`
-	GanadorID   uint
-	Ronda       uint
-	FechaHora   string  `gorm:"type:timestamp;default:now"`
-	EquipoA     *Equipo `gorm:"foreignKey:EquipoAID"` // Relación Muchos a Uno
-	EquipoB     *Equipo `gorm:"foreignKey:EquipoBID"` // Relación Muchos a Uno
+	ID                 uint `gorm:"primaryKey"`
+	CategoriaID        uint `gorm:"not null"`
+	RobotAID           uint
+	RobotBID           uint
+	RobotGanadorID     *uint
+	NumeroRonda        uint
+	FechaHoraInsercion string `gorm:"type:timestamp;default:now"`
+	FechaHoraCompetion string `gorm:"type:timestamp;default:null"`
+	RobotA             *Robot `gorm:"foreignKey:RobotAID"`                                     // Relación Muchos a Uno
+	RobotB             *Robot `gorm:"foreignKey:RobotBID"`                                     // Relación Muchos a Uno
+	RobotGanador       *Robot `gorm:"foreignKey:RobotGanadorID" json:"RobotGanador,omitempty"` // Relación Muchos a Uno
+}
+type RondaSigueLineas struct {
+	ID                 uint `gorm:"primaryKey"`
+	CategoriaID        uint `gorm:"not null"`
+	RobotID            uint `gorm:"not null"`
+	Intento            uint
+	Tiempo             string `gorm:"type:TIME(6)"`
+	SumaPenalizaciones uint   `gorm:"type:decimal(10,2)"`
+	FechaHora          string `gorm:"type:timestamp;default:now"`
+	Robot              *Robot `gorm:"foreignKey:RobotID"` // Relación Muchos a Uno
 }
 
 type Arbitro struct {
@@ -83,6 +97,7 @@ func MigrateTables(db *gorm.DB) error {
 		&Arbitro{},
 		&Puntuacion{},
 		&Ronda{},
+		&RondaSigueLineas{},
 	)
 }
 

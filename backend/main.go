@@ -35,6 +35,7 @@ func main() {
 	controllers.RegisterLoginRoutes(router)
 	controllers.RegisterRegistreRoutes(router)
 	controllers.RegisterCategoriaRoutes(router)
+	controllers.RegisterRoutesCompeticion(router)
 
 	router.Run(os.Getenv("IP_SERVER") + ":" + os.Getenv("PORT_SERVER"))
 
