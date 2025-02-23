@@ -23,7 +23,12 @@ func GetRondaCompeticionSumo() (*models.Ronda, error) {
 		}
 	}
 	db.Model(&ronda).Update("fecha_hora_competion", time.Now())
+	//TODO falta poner el id del arbitro
 	fmt.Printf("Ronda tomada por arbitro id:%d ronda:[%v]\n", -1, ronda)
+	ronda.RobotA = &models.Robot{}
+	ronda.RobotB = &models.Robot{}
+	db.First(ronda.RobotA, "ID = ?", ronda.RobotAID)
+	db.First(ronda.RobotB, "ID = ?", ronda.RobotBID)
 	return &ronda, nil
 }
 
