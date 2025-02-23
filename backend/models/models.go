@@ -119,5 +119,5 @@ func InsertCategorias(db *gorm.DB) error {
 			return err
 		}
 	}
-	return db.Create(&categorias).Error
+	return nil
 }
