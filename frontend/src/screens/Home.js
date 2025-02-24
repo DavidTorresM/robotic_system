@@ -25,6 +25,11 @@ const Home = () => {
                     title="Login"
                     onPress={() => navigation.navigate('Login')}
                 />
+
+                <Button
+                    title="Competiciones"
+                    onPress={() => navigation.navigate('Competiciones')}
+                />
             </View>
         </ScrollView>
     );
