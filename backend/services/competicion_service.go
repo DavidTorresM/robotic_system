@@ -45,6 +45,9 @@ func GetRondaCompeticionSigueLineas() (*models.RondaSigueLineas, error) {
 		}
 	}
 	db.Model(&ronda).Update("fecha_hora_competion", time.Now())
+	ronda.Robot = &models.Robot{}
+	db.First(ronda.Robot, "ID = ?", ronda.RobotID)
+	//TODO falta el arbitro
 	fmt.Printf("Ronda tomada por arbitro id:%d ronda:[%v]\n", -1, ronda)
 	return &ronda, nil
 }
