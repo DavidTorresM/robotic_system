@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -9,35 +10,67 @@ import (
 	"gorm.io/gorm"
 )
 
-var timeout_conexion = 60
-var DB *gorm.DB
+type Database interface {
+	Connect() error
+	GetDB() *gorm.DB
+}
 
-func ConnectDatabase() {
-	dsn := os.Getenv("DATABASE_DSN")
+type PostgresDatabase struct {
+	dsn             string
+	timeoutConexion int
+	db              *gorm.DB
+}
 
-	if dsn == "" {
-		log.Fatal("DATABASE_DSN environment variable is not set")
+func NewPostgresDatabase(dsn string, timeout int) *PostgresDatabase {
+	return &PostgresDatabase{
+		dsn:             dsn,
+		timeoutConexion: timeout,
+	}
+}
+
+func (p *PostgresDatabase) Connect() error {
+	if p.dsn == "" {
+		return fmt.Errorf("DATABASE_DSN environment variable is not set")
 	}
 	var conectada bool
 	for !conectada {
-		database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		database, err := gorm.Open(postgres.Open(p.dsn), &gorm.Config{})
 		if err != nil {
 			log.Println("Failed to connect to database:", err)
-			timeout_conexion--
-			if timeout_conexion <= 0 {
-				log.Fatal("Timeout reached. Could not connect to database.")
+			p.timeoutConexion--
+			if p.timeoutConexion <= 0 {
+				return fmt.Errorf("timeout reached. Could not connect to database")
 			}
 			time.Sleep(1 * time.Second)
 			continue
 		}
 		conectada = true
-		DB = database
+		p.db = database
 	}
-
+	return nil
 }
-func GetDatabase() *gorm.DB {
-	if DB == nil {
-		ConnectDatabase()
+
+func (p *PostgresDatabase) GetDB() *gorm.DB {
+	if p.db == nil {
+		err := p.Connect()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	return DB
+	return p.db
+}
+
+var DB Database
+
+func ConnectDatabase() {
+	dsn := os.Getenv("DATABASE_DSN")
+	DB = NewPostgresDatabase(dsn, 60)
+	err := DB.Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func GetDatabase() *gorm.DB {
+	return DB.GetDB()
 }

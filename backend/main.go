@@ -26,7 +26,7 @@ func main() {
 	log.Println("Generando DDL de la base de datos")
 	services.ConnectDatabase()
 
-	err = models.MigrateTables(services.DB)
+	err = models.MigrateTables(services.GetDatabase())
 	if err != nil {
 		log.Fatal("Error generando el DDL de la base de datos:", err)
 		return
