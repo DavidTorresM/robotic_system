@@ -41,27 +41,15 @@ type Robot struct {
 	Categoria   *Categoria `gorm:"foreignKey:CategoriaID" json:"Categoria,omitempty"` // Relación Muchos a Uno
 }
 
-type Puntuacion struct {
-	ID             uint    `gorm:"primaryKey"`
-	RobotID        uint    `gorm:"not null"`
-	ArbitroID      uint    `gorm:"not null"`
-	CategoriaID    uint    `gorm:"not null"`
-	Puntaje        float64 `gorm:"type:decimal(10,2)"`
-	Tiempo         float64 `gorm:"type:decimal(10,2)"`
-	ResultadoRonda string  `gorm:"size:50"`
-	Ronda          uint
-	Comentarios    string `gorm:"size:255"`
-	FechaHora      string `gorm:"type:timestamp;default:now"`
-	Robot          *Robot `gorm:"foreignKey:RobotID"` // Relación Muchos a Uno
-}
-
 type Ronda struct {
 	ID                 uint `gorm:"primaryKey"`
 	CategoriaID        uint `gorm:"not null"`
 	RobotAID           *uint
 	RobotBID           *uint
+	RobotAPuntos       *uint
+	RobotBPuntos       *uint
+	ArbitroID          *uint
 	RobotGanadorID     *uint
-	NumeroRonda        uint
 	FechaHoraInsercion string `gorm:"type:timestamp;default:now"`
 	FechaHoraCompetion string `gorm:"type:timestamp;default:null"`
 	RobotA             *Robot `gorm:"foreignKey:RobotAID"`                                     // Relación Muchos a Uno
@@ -96,7 +84,6 @@ func MigrateTables(db *gorm.DB) error {
 		&Participante{},
 		&Robot{},
 		&Arbitro{},
-		&Puntuacion{},
 		&Ronda{},
 		&RondaSigueLineas{},
 	)
