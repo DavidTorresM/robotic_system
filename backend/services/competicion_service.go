@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"robotica_concursos/controllers/vo"
 	"robotica_concursos/models"
 	"strconv"
 	"strings"
@@ -116,8 +117,8 @@ func StartCompetitionSumo(id uint) error {
 		rondaNueva := models.Ronda{}
 		robotA := robots[i]
 		robotB := robots[i+1]
-		rondaNueva.RobotAID = robotA.ID
-		rondaNueva.RobotBID = robotB.ID
+		rondaNueva.RobotAID = &robotA.ID
+		rondaNueva.RobotBID = &robotB.ID
 		rondaNueva.CategoriaID = id
 		if err := db.Create(&rondaNueva).Error; err != nil {
 			msjError := fmt.Sprintf("error al insertar la ronda para los robots (%d,%s) y (%d,%s): %w", robotA.ID, robotA.Nombre, robotB.ID, robotB.Nombre, err)
@@ -166,5 +167,45 @@ func StartCompetitionSigueLineas(id uint) error {
 		return fmt.Errorf("no se insertaron robots en la competicion sigue lineas")
 	}
 
+	return nil
+}
+
+func SetWinnerSumo(req vo.RequestBody) error {
+	db := GetDatabase()
+	db = db.Debug()
+	var ronda models.Ronda
+	err := db.First(&ronda, req.IDRonda).Error
+	if err != nil {
+		return fmt.Errorf("error al actualizar la ronda: %w", err)
+	}
+	//Seteamos el nuevo ganador
+	ronda.RobotGanadorID = &req.IDRobotGanador
+	ronda.FechaHoraCompetion = time.Now().Format("2006-01-02 15:04:05.000000")
+	err = db.Save(&ronda).Error
+	if err != nil {
+		return fmt.Errorf("error al actualizar la ronda: %w", err)
+	}
+	//Buscamos la siguiente ronda disponible
+	ronda = models.Ronda{}
+	err = db.Table("rondas").Where("robot_b_id is null").First(&ronda).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			//Generar el insert de la ronda
+			rondaNueva := models.Ronda{}
+			rondaNueva.CategoriaID = ronda.CategoriaID
+			rondaNueva.FechaHoraInsercion = time.Now().Format("2006-01-02 15:04:05.000000")
+			rondaNueva.RobotBID = nil
+			rondaNueva.RobotAID = &req.IDRobotGanador
+			err = db.Create(&rondaNueva).Error
+			if err != nil {
+				return fmt.Errorf("error al insertar la nueva ronda: %w", err)
+			}
+			return nil
+		} else {
+			return fmt.Errorf("error al obtener la ronda de sumo: %w", err)
+		}
+	}
+	//Hacemos el update de la ronda
+	db.Model(&ronda).Update("robot_b_id", req.IDRobotGanador)
 	return nil
 }

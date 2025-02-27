@@ -58,8 +58,8 @@ type Puntuacion struct {
 type Ronda struct {
 	ID                 uint `gorm:"primaryKey"`
 	CategoriaID        uint `gorm:"not null"`
-	RobotAID           uint
-	RobotBID           uint
+	RobotAID           *uint
+	RobotBID           *uint
 	RobotGanadorID     *uint
 	NumeroRonda        uint
 	FechaHoraInsercion string `gorm:"type:timestamp;default:now"`

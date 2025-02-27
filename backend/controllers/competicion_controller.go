@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"robotica_concursos/controllers/vo"
 	"robotica_concursos/services"
 
 	"github.com/gin-gonic/gin"
@@ -66,7 +67,24 @@ func GetCompeticion(c *gin.Context) {
 	}
 }
 
+func FijaGanadorCompeticionSumo(c *gin.Context) {
+	var requestBody vo.RequestBody
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	err := services.SetWinnerSumo(requestBody)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Se fijo el ganador de la competicion satisfactoriamente"})
+}
+
 func RegisterRoutesCompeticion(router *gin.Engine) {
+	router.POST("/competicion/sumo/ganador", FijaGanadorCompeticionSumo)
 	router.GET("/competicion", GetCompeticion)
 	router.POST("/competicion/start", StartCompeticion)
 }
