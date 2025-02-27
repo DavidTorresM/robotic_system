@@ -6,14 +6,33 @@ import (
 	"os"
 )
 
-func SendEmail(to string, subject string, body string) error {
-	smtpHost := os.Getenv("SMTP_HOST")
-	smtpPort := os.Getenv("SMTP_PORT")
-	senderEmail := os.Getenv("SENDER_EMAIL")
-	senderPassword := os.Getenv("SENDER_PASSWORD")
+// EmailSender define la interfaz para enviar correos electrónicos.
+type EmailSender interface {
+	SendEmail(to string, subject string, body string) error
+}
 
-	auth := smtp.PlainAuth("", senderEmail, senderPassword, smtpHost)
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, senderEmail, []string{to}, []byte("Subject: "+subject+"\r\n\r\n"+body))
+// SMTPEmailSender es una implementación de EmailSender que usa SMTP.
+type SMTPEmailSender struct {
+	SMTPHost       string
+	SMTPPort       string
+	SenderEmail    string
+	SenderPassword string
+}
+
+// NewSMTPEmailSender crea una nueva instancia de SMTPEmailSender.
+func NewSMTPEmailSender() *SMTPEmailSender {
+	return &SMTPEmailSender{
+		SMTPHost:       os.Getenv("SMTP_HOST"),
+		SMTPPort:       os.Getenv("SMTP_PORT"),
+		SenderEmail:    os.Getenv("SENDER_EMAIL"),
+		SenderPassword: os.Getenv("SENDER_PASSWORD"),
+	}
+}
+
+// SendEmail envía un correo electrónico usando SMTP.
+func (s *SMTPEmailSender) SendEmail(to string, subject string, body string) error {
+	auth := smtp.PlainAuth("", s.SenderEmail, s.SenderPassword, s.SMTPHost)
+	err := smtp.SendMail(s.SMTPHost+":"+s.SMTPPort, auth, s.SenderEmail, []string{to}, []byte("Subject: "+subject+"\r\n\r\n"+body))
 	if err != nil {
 		fmt.Println("Error enviando correo:", err)
 		return err

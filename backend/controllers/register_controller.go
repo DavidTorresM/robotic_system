@@ -19,8 +19,8 @@ func RegisterParticipante(c *gin.Context) {
 	}
 	token := services.GenerateRandomToken()
 	participante.TokenVerificacion = token
-	verificationURL := "http://" + os.Getenv("IP_SERVER") + ":" + os.Getenv("PORT_SERVER") + "/verify?email=" + url.QueryEscape(participante.Correo) + "&token=" + url.QueryEscape(token)
-	services.SendEmail(
+	verificationURL := "http://" + os.Getenv("IP_PUBLICA_SERVER") + ":" + os.Getenv("PORT_SERVER") + "/verify?email=" + url.QueryEscape(participante.Correo) + "&token=" + url.QueryEscape(token)
+	services.NewSMTPEmailSender().SendEmail(
 		participante.Correo,
 		"Correo de verificacion",
 		"Para verificar correo haga click en el siguiente enlace: "+verificationURL)
