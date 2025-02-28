@@ -9,7 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetRobots(c *gin.Context) {
+type RobotsController struct {
+	service services.RobotService
+}
+
+func NewRobotsController(service services.RobotService) *RobotsController {
+	return &RobotsController{service: service}
+}
+
+func (rc *RobotsController) GetRobots(c *gin.Context) {
 	tam, err := strconv.Atoi(c.Query("size"))
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid size parameter"})
@@ -21,29 +29,30 @@ func GetRobots(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid page parameter"})
 		return
 	}
-	services.GetRobots(c, page, tam)
+	rc.service.GetRobots(c, page, tam)
 }
 
-func GetRobotByID(c *gin.Context) {
-	services.GetRobotByID(c)
+func (rc *RobotsController) GetRobotByID(c *gin.Context) {
+	rc.service.GetRobotByID(c)
 }
 
-func PostRobot(c *gin.Context) {
-	services.PostRobot(c)
+func (rc *RobotsController) PostRobot(c *gin.Context) {
+	rc.service.PostRobot(c)
 }
 
-func UpdateRobot(c *gin.Context) {
-	services.UpdateRobot(c)
+func (rc *RobotsController) UpdateRobot(c *gin.Context) {
+	rc.service.UpdateRobot(c)
 }
 
-func DeleteRobot(c *gin.Context) {
-	services.DeleteRobot(c)
+func (rc *RobotsController) DeleteRobot(c *gin.Context) {
+	rc.service.DeleteRobot(c)
 }
 
-func RegisterRoutesRobots(router *gin.Engine) {
-	router.GET("/robots", GetRobots)
-	router.GET("/robots/:id", GetRobotByID)
-	router.POST("/robots", PostRobot)
-	router.PUT("/robots/:id", UpdateRobot)
-	router.DELETE("/robots/:id", DeleteRobot)
+func RegisterRoutesRobots(router *gin.Engine, service services.RobotService) {
+	controller := NewRobotsController(service)
+	router.GET("/robots", controller.GetRobots)
+	router.GET("/robots/:id", controller.GetRobotByID)
+	router.POST("/robots", controller.PostRobot)
+	router.PUT("/robots/:id", controller.UpdateRobot)
+	router.DELETE("/robots/:id", controller.DeleteRobot)
 }

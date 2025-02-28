@@ -9,7 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetEquipos(c *gin.Context) {
+type EquipoController struct {
+	service services.EquipoService
+}
+
+func NewEquipoController(service services.EquipoService) *EquipoController {
+	return &EquipoController{service: service}
+}
+
+func (ec *EquipoController) GetEquipos(c *gin.Context) {
 	tam, err := strconv.Atoi(c.Query("size"))
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid size parameter"})
@@ -21,29 +29,30 @@ func GetEquipos(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid page parameter"})
 		return
 	}
-	services.GetEquipos(c, page, tam)
+	ec.service.GetEquipos(c, page, tam)
 }
 
-func GetEquipoByID(c *gin.Context) {
-	services.GetEquipoByID(c)
+func (ec *EquipoController) GetEquipoByID(c *gin.Context) {
+	ec.service.GetEquipoByID(c)
 }
 
-func PostEquipo(c *gin.Context) {
-	services.PostEquipo(c)
+func (ec *EquipoController) PostEquipo(c *gin.Context) {
+	ec.service.PostEquipo(c)
 }
 
-func UpdateEquipo(c *gin.Context) {
-	services.UpdateEquipo(c)
+func (ec *EquipoController) UpdateEquipo(c *gin.Context) {
+	ec.service.UpdateEquipo(c)
 }
 
-func DeleteEquipo(c *gin.Context) {
-	services.DeleteEquipo(c)
+func (ec *EquipoController) DeleteEquipo(c *gin.Context) {
+	ec.service.DeleteEquipo(c)
 }
 
-func RegisterRoutes(router *gin.Engine) {
-	router.GET("/equipos", GetEquipos)
-	router.GET("/equipos/:id", GetEquipoByID)
-	router.POST("/equipos", PostEquipo)
-	router.PUT("/equipos/:id", UpdateEquipo)
-	router.DELETE("/equipos/:id", DeleteEquipo)
+func RegisterRoutesEquipo(router *gin.Engine, service services.EquipoService) {
+	controller := NewEquipoController(service)
+	router.GET("/equipos", controller.GetEquipos)
+	router.GET("/equipos/:id", controller.GetEquipoByID)
+	router.POST("/equipos", controller.PostEquipo)
+	router.PUT("/equipos/:id", controller.UpdateEquipo)
+	router.DELETE("/equipos/:id", controller.DeleteEquipo)
 }

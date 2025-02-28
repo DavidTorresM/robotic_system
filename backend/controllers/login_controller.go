@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"robotica_concursos/models"
 	"robotica_concursos/services"
 
 	"github.com/gin-contrib/sessions"
@@ -10,10 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type LoginController struct{}
+type LoginController struct {
+	loginService *services.LoginService
+}
 
-func NewLoginController() *LoginController {
-	return &LoginController{}
+func NewLoginController(loginService *services.LoginService) *LoginController {
+	return &LoginController{loginService: loginService}
 }
 
 func (ctrl *LoginController) Login(c *gin.Context) {
@@ -27,16 +28,10 @@ func (ctrl *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	var db = services.GetDatabase()
-
-	var participante models.Participante
-	if err := db.Where("Correo = ?", loginData.Username).First(&participante).Error; err != nil {
+	participante, err := ctrl.loginService.Authenticate(loginData.Username, loginData.Password)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
-	}
-
-	if participante.Password != loginData.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 	}
 
 	session := sessions.Default(c)
@@ -50,9 +45,9 @@ func (ctrl *LoginController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
 }
 
-func RegisterLoginRoutes(router *gin.Engine) {
+func RegisterLoginRoutes(router *gin.Engine, loginService *services.LoginService) {
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
-	lc := NewLoginController()
+	lc := NewLoginController(loginService)
 	router.POST("/login", lc.Login)
 }

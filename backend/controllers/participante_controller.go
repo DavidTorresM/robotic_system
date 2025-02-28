@@ -9,11 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ParticipanteController struct{}
+type ParticipanteController struct {
+	service services.ParticipanteServiceInterface
+}
+
+func NewParticipanteController(service services.ParticipanteServiceInterface) *ParticipanteController {
+	return &ParticipanteController{service: service}
+}
 
 func (pc ParticipanteController) GetParticipantes(c *gin.Context) {
-	var participantes []models.Participante
-	if err := services.GetDatabase().Find(&participantes).Error; err != nil {
+	participantes, err := pc.service.GetParticipantes()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -22,8 +28,8 @@ func (pc ParticipanteController) GetParticipantes(c *gin.Context) {
 
 func (pc ParticipanteController) GetParticipante(c *gin.Context) {
 	id := c.Param("id")
-	var participante models.Participante
-	if err := services.GetDatabase().First(&participante, id).Error; err != nil {
+	participante, err := pc.service.GetParticipante(id)
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Participante not found"})
 		return
 	}
@@ -36,17 +42,18 @@ func (pc ParticipanteController) CreateParticipante(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := services.GetDatabase().Create(&participante).Error; err != nil {
+	createdParticipante, err := pc.service.CreateParticipante(participante)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, participante)
+	c.JSON(http.StatusCreated, createdParticipante)
 }
 
 func (pc ParticipanteController) UpdateParticipante(c *gin.Context) {
 	id := c.Param("id")
 	var participante models.Participante
-	if err := services.GetDatabase().First(&participante, id).Error; err != nil {
+	if _, err := pc.service.GetParticipante(id); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Participante not found"})
 		return
 	}
@@ -54,24 +61,25 @@ func (pc ParticipanteController) UpdateParticipante(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := services.GetDatabase().Save(&participante).Error; err != nil {
+	updatedParticipante, err := pc.service.UpdateParticipante(participante)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, participante)
+	c.JSON(http.StatusOK, updatedParticipante)
 }
 
 func (pc ParticipanteController) DeleteParticipante(c *gin.Context) {
 	id := c.Param("id")
-	if err := services.GetDatabase().Delete(&models.Participante{}, id).Error; err != nil {
+	if err := pc.service.DeleteParticipante(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
 }
 
-func RegisterParticipanteRoutes(router *gin.Engine) {
-	pc := ParticipanteController{}
+func RegisterParticipanteRoutes(router *gin.Engine, service services.ParticipanteServiceInterface) {
+	pc := NewParticipanteController(service)
 	router.GET("/participantes", pc.GetParticipantes)
 	router.GET("/participantes/:id", pc.GetParticipante)
 	router.POST("/participantes", pc.CreateParticipante)

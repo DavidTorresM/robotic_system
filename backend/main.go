@@ -48,13 +48,23 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	controllers.RegisterRoutes(router)
-	controllers.RegisterRoutesRobots(router)
-	controllers.RegisterParticipanteRoutes(router)
-	controllers.RegisterLoginRoutes(router)
+	// Inicializar servicios
+
+	serviceCategoria := services.NewCategoriaService(services.GetDatabase())
+	serviceEquipo := services.NewEquipoService(services.GetDatabase())
+	serviceRobot := services.NewRobotService(services.GetDatabase())
+	serviceParticipante := services.NewParticipanteService(services.GetDatabase())
+	serviceLogin := services.NewLoginService(services.GetDatabase())
+	serviceCompeticion := services.NewCompeticionService(services.GetDatabase())
+
+	// Register routes
+	controllers.RegisterRoutesEquipo(router, serviceEquipo)
+	controllers.RegisterRoutesRobots(router, serviceRobot)
+	controllers.RegisterParticipanteRoutes(router, serviceParticipante)
+	controllers.RegisterLoginRoutes(router, serviceLogin)
 	controllers.RegisterRegistreRoutes(router)
-	controllers.RegisterCategoriaRoutes(router)
-	controllers.RegisterRoutesCompeticion(router)
+	controllers.RegisterCategoriaRoutes(router, serviceCategoria)
+	controllers.RegisterRoutesCompeticion(router, serviceCompeticion)
 
 	router.Run(os.Getenv("IP_SERVER") + ":" + os.Getenv("PORT_SERVER"))
 

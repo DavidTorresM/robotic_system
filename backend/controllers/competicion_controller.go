@@ -12,7 +12,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartCompeticion(c *gin.Context) {
+// CompeticionController handles competition-related requests
+type CompeticionController struct {
+	service services.CompeticionService
+}
+
+// NewCompeticionController creates a new CompeticionController
+func NewCompeticionController(service services.CompeticionService) *CompeticionController {
+	return &CompeticionController{service: service}
+}
+
+func (cc *CompeticionController) StartCompeticion(c *gin.Context) {
 	idStr := c.Query("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -20,8 +30,8 @@ func StartCompeticion(c *gin.Context) {
 		return
 	}
 
-	// Placeholder for starting the competition by ID
-	err = services.StartCompetitionByID(id)
+	// Start the competition by ID
+	err = cc.service.StartCompetitionByID(id)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
@@ -31,7 +41,7 @@ func StartCompeticion(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Competition started", "id": id})
 }
 
-func GetCompeticion(c *gin.Context) {
+func (cc *CompeticionController) GetCompeticion(c *gin.Context) {
 	idStr := c.Query("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -39,7 +49,7 @@ func GetCompeticion(c *gin.Context) {
 		return
 	}
 	if id == 1 {
-		ronda, err := services.GetRondaCompeticionSumo()
+		ronda, err := cc.service.GetRondaCompeticionSumo()
 		if err != nil {
 			if strings.Contains(err.Error(), "no hay mas rondas") {
 				c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprint(err)})
@@ -52,7 +62,7 @@ func GetCompeticion(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"ronda": *ronda})
 		return
 	} else if id == 3 {
-		ronda, err := services.GetRondaCompeticionSigueLineas()
+		ronda, err := cc.service.GetRondaCompeticionSigueLineas()
 		if err != nil {
 			if strings.Contains(err.Error(), "no hay mas rondas") {
 				c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprint(err)})
@@ -67,14 +77,14 @@ func GetCompeticion(c *gin.Context) {
 	}
 }
 
-func FijaGanadorCompeticionSumo(c *gin.Context) {
+func (cc *CompeticionController) FijaGanadorCompeticionSumo(c *gin.Context) {
 	var requestBody vo.RequestBody
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	err := services.SetWinnerSumo(requestBody)
+	err := cc.service.SetWinnerSumo(requestBody)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprint(err)})
 		return
@@ -83,8 +93,9 @@ func FijaGanadorCompeticionSumo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Se fijo el ganador de la competicion satisfactoriamente"})
 }
 
-func RegisterRoutesCompeticion(router *gin.Engine) {
-	router.POST("/competicion/sumo/ganador", FijaGanadorCompeticionSumo)
-	router.GET("/competicion", GetCompeticion)
-	router.POST("/competicion/start", StartCompeticion)
+func RegisterRoutesCompeticion(router *gin.Engine, service services.CompeticionService) {
+	controller := NewCompeticionController(service)
+	router.POST("/competicion/sumo/ganador", controller.FijaGanadorCompeticionSumo)
+	router.GET("/competicion", controller.GetCompeticion)
+	router.POST("/competicion/start", controller.StartCompeticion)
 }
