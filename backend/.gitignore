@@ -47,3 +47,4 @@ gin-bin
 .env
 config.yaml
 settings.json
+tmp
