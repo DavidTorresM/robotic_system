@@ -1,0 +1,447 @@
+{
+  "info": {
+    "name": "Robotic System API",
+    "_postman_id": "b1a2c3d4-e5f6-7890-abcd-ef1234567890",
+    "description": "Colección de endpoints para el backend de Robotic System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"usuario@correo.com\",\n  \"password\": \"tu_password\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Register Participante",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Nombre\": \"Juan\",\n  \"Correo\": \"juan@correo.com\",\n  \"Password\": \"123456\",\n  \"Telefono\": \"123456789\",\n  \"EquipoID\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["register"]
+        }
+      }
+    },
+    {
+      "name": "Verificar Email",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/verify?email=juan@correo.com&token=TOKEN",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["verify"],
+          "query": [
+            { "key": "email", "value": "juan@correo.com" },
+            { "key": "token", "value": "TOKEN" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar Participantes",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/participantes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["participantes"]
+        }
+      }
+    },
+    {
+      "name": "Obtener Participante",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/participantes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["participantes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Crear Participante",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Nombre\": \"Juan\",\n  \"Correo\": \"juan@correo.com\",\n  \"Password\": \"123456\",\n  \"Telefono\": \"123456789\",\n  \"EquipoID\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/participantes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["participantes"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Participante",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ID\": 1,\n  \"Nombre\": \"Juan Actualizado\",\n  \"Correo\": \"juan@correo.com\",\n  \"Password\": \"123456\",\n  \"Telefono\": \"987654321\",\n  \"EquipoID\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/participantes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["participantes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Participante",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:3000/participantes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["participantes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Listar Equipos",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/equipos?page=1&size=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["equipos"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Obtener Equipo",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/equipos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["equipos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Crear Equipo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Nombre\": \"Equipo Alfa\",\n  \"Descripcion\": \"Equipo de prueba\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/equipos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["equipos"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Equipo",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ID\": 1,\n  \"Nombre\": \"Equipo Beta\",\n  \"Descripcion\": \"Equipo actualizado\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/equipos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["equipos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Equipo",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:3000/equipos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["equipos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Listar Robots",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/robots?page=1&size=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["robots"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Obtener Robot",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/robots/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["robots", "1"]
+        }
+      }
+    },
+    {
+      "name": "Crear Robot",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Nombre\": \"RobotX\",\n  \"Descripcion\": \"Robot de sumo\",\n  \"EquipoID\": 1,\n  \"CategoriaID\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/robots",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["robots"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Robot",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ID\": 1,\n  \"Nombre\": \"RobotX2\",\n  \"Descripcion\": \"Robot actualizado\",\n  \"EquipoID\": 1,\n  \"CategoriaID\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/robots/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["robots", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Robot",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:3000/robots/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["robots", "1"]
+        }
+      }
+    },
+    {
+      "name": "Listar Categorias",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/categorias?page=1&pageSize=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["categorias"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Obtener Categoria",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/categorias/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["categorias", "1"]
+        }
+      }
+    },
+    {
+      "name": "Crear Categoria",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Nombre\": \"Sumo\",\n  \"Descripcion\": \"Robots de sumo\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/categorias",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["categorias"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Categoria",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ID\": 1,\n  \"Nombre\": \"Sumo Actualizado\",\n  \"Descripcion\": \"Descripcion actualizada\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/categorias/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["categorias", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Categoria",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:3000/categorias/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["categorias", "1"]
+        }
+      }
+    },
+    {
+      "name": "Iniciar Competicion",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "http://localhost:3000/competicion/start?id=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["competicion", "start"],
+          "query": [
+            { "key": "id", "value": "1" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Obtener Competicion",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/competicion?id=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["competicion"],
+          "query": [
+            { "key": "id", "value": "1" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Fijar Ganador Sumo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"idRobotGanador\": 2,\n  \"idRonda\": 5,\n  \"ganadorA\": 1,\n  \"puntosRobotA\": 3,\n  \"puntosRobotB\": 1,\n  \"descalificado\": false\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/competicion/sumo/ganador",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["competicion", "sumo", "ganador"]
+        }
+      }
+    }
+  ]
+}
